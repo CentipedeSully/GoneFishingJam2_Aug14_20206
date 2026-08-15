@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class TimedClickMiniGame : MonoBehaviour
 {
@@ -8,6 +10,8 @@ public class TimedClickMiniGame : MonoBehaviour
     [SerializeField] private Transform _playerRunner;
     [SerializeField] private Transform _minRunner;
     [SerializeField] private Transform _maxRunner;
+    [SerializeField] private Image _fillAreaImage;
+    [SerializeField] private Image _fillBackground;
 
     [SerializeField] private float _currentValue = 0;
     [SerializeField] private float _maxValue = 360;
@@ -17,7 +21,15 @@ public class TimedClickMiniGame : MonoBehaviour
     [SerializeField] private float _sweetSpotMin;
     [SerializeField] private float _sweetSpotMax;
 
-    [Space(20)]
+
+    [Header("UnityEvents")]
+    public UnityEvent<TimedClickMiniGame> OnMinigameStarted;
+    public UnityEvent<bool> OnCycleStopped;
+    public UnityEvent OnMinigameEnded;
+
+
+
+    [Header("Debug")]
     [SerializeField] private bool _isDebugActive = false;
     [SerializeField] private bool _cmdCalculateSweetSpot = false;
     [SerializeField] private bool _cmdStartRunner = false;
@@ -64,8 +76,15 @@ public class TimedClickMiniGame : MonoBehaviour
         if (_sweetSpotMax > _maxValue)
             _sweetSpotMax = _sweetSpotMax - _maxValue;
 
+        //rotate the runners to visually represent the target area
         _minRunner.rotation = Quaternion.Euler(0, 0, -_sweetSpotMin);
         _maxRunner.rotation = Quaternion.Euler(0, 0, -_sweetSpotMax);
+
+        //also make sure the fill area reflects the target area
+        _fillAreaImage.transform.rotation = Quaternion.Euler(0, 0, -sweetSpot + _sweetSpotRange);
+        _fillBackground.transform.rotation = Quaternion.Euler(0, 0, -sweetSpot + _sweetSpotRange);
+        _fillAreaImage.fillAmount = _sweetSpotRange * 2 / _maxValue;
+
     }
 
     public void StartCycler()
@@ -74,18 +93,20 @@ public class TimedClickMiniGame : MonoBehaviour
         _currentValue = 0;
         CalculateSweetSpot();
         _isCycling = true;
+        OnMinigameStarted?.Invoke(this);
     }
 
     public void FreezeCycler()
     {
         _isCycling = false;
-
+        OnCycleStopped?.Invoke(this);
     }
 
     public void CloseCycler()
     {
         _isCycling = false;
         _cycler.SetActive(false);
+        OnMinigameEnded?.Invoke();
     }
 
     public void ResumeRunner()
