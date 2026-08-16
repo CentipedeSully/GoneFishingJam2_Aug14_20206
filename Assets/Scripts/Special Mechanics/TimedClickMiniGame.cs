@@ -21,6 +21,7 @@ public class TimedClickMiniGame : MonoBehaviour
     [SerializeField] private float _sweetSpotMin;
     [SerializeField] private float _sweetSpotMax;
 
+    
 
     [Header("UnityEvents")]
     public UnityEvent<TimedClickMiniGame> OnMinigameStarted;
@@ -40,17 +41,22 @@ public class TimedClickMiniGame : MonoBehaviour
 
 
 
-
+    //monobehaviours
     private void Update()
     {
         if (_isDebugActive)
             ListenForDebugCommands();
 
         if (_isCycling)
+        {
             TickCycler();
+        }
+            
     }
 
 
+
+    //internals
     private void TickCycler()
     {
         _currentValue += Time.unscaledDeltaTime * _cycleRate;
@@ -87,6 +93,9 @@ public class TimedClickMiniGame : MonoBehaviour
 
     }
 
+
+
+    //externals
     public void StartCycler()
     {
         _cycler.SetActive(true);
@@ -95,28 +104,27 @@ public class TimedClickMiniGame : MonoBehaviour
         _isCycling = true;
         OnMinigameStarted?.Invoke(this);
     }
-
     public void FreezeCycler()
     {
         _isCycling = false;
         OnCycleStopped?.Invoke(this);
     }
-
     public void CloseCycler()
     {
         _isCycling = false;
         _cycler.SetActive(false);
         OnMinigameEnded?.Invoke();
     }
-
     public void ResumeRunner()
     {
         _isCycling = true;
     }
 
     
+  
 
 
+    //Debug
     private void ListenForDebugCommands()
     {
         if (_cmdCalculateSweetSpot)

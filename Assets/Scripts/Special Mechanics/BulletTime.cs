@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BulletTime : MonoBehaviour
 {
@@ -20,6 +21,11 @@ public class BulletTime : MonoBehaviour
     private float _currentBulletTime = 0;
 
 
+    [Header("unityEvents")]
+    public UnityEvent OnBulletTimeEntered;
+    public UnityEvent OnBulletTimeExited;
+
+    [Header("Debug")]
     [SerializeField] private bool _debugActive = false;
     [SerializeField] private bool _cmdToggleBulletTime = false;
     private float _transitionAlpha;
@@ -67,6 +73,7 @@ public class BulletTime : MonoBehaviour
                 _currentTransitionTime = 0;
                 _isTransitioning = false;
                 _isInBulletTime = true;
+                OnBulletTimeEntered?.Invoke();
             }
         }
 
@@ -83,6 +90,7 @@ public class BulletTime : MonoBehaviour
                 _currentTransitionTime = 0;
                 _isTransitioning = false;
                 _isInBulletTime = false;
+                OnBulletTimeExited?.Invoke();
             }
         }
     }
@@ -106,6 +114,11 @@ public class BulletTime : MonoBehaviour
             _currentBulletTime = 0;
             _isTransitioning = true;
         }
+    }
+
+    public bool IsInBulletTime()
+    {
+        return _isInBulletTime;
     }
 
     private void ListenForDebugCommands()

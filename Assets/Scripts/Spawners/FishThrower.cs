@@ -26,6 +26,7 @@ public class FishThrower : MonoBehaviour
 
     [SerializeField] private float _spawnRateBase = 1f;
     [SerializeField] private float _spawnRateVariance = .5f;
+    [SerializeField] private bool _spawnFishOnStart = false;
     [SerializeField] private bool _spawnFish = false;
     [SerializeField] private Transform _riverStart;
     [SerializeField] private Transform _riverEnd;
@@ -48,6 +49,12 @@ public class FishThrower : MonoBehaviour
     {
         for (int i = 0; i < _spawnPointsContainer.childCount; i++) 
             _spawnPoints.Add(_spawnPointsContainer.GetChild(i));
+    }
+
+    private void Start()
+    {
+        if (_spawnFishOnStart)
+            _spawnFish = true;
     }
 
     private void Update()
