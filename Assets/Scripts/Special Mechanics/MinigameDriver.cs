@@ -9,14 +9,26 @@ public class MinigameDriver : MonoBehaviour
     [SerializeField] private TimedClickMiniGame _minigame;
     [SerializeField] private Camera _mainCam;
     [SerializeField] private FishDespawner _despawner;
+    [SerializeField] private KunaiThrower _kunaiThrower;
+    [SerializeField] private KunaiManager _kunaiManager;
     [SerializeField] private bool _isInBulletTime = false;
-    private List<GameObject> _targetableFishList;
+    private bool _minigameCoolingDown = false;
+    private List<GameObject> _inRangeFishList;
+    private List<GameObject> _markedFishList;
+    private List<GameObject> _targetableFish = new();
     [SerializeField] private GameObject _currentlyTargetedFish;
+    [SerializeField] private float _minigameResponseDelay = .25f;
+    private int _kunaiCommitted = 0;
     //[SerializeField] private List<GameObject> _markedFish = new();
 
     [Header("UnityEvents")]
     public UnityEvent OnEnterBulletTimeAction; 
-    public UnityEvent OnExitBulletTimeAction; 
+    public UnityEvent OnExitBulletTimeAction;
+    public UnityEvent<bool,GameObject> OnKunaiThrown;
+    public UnityEvent OnHit;
+    public UnityEvent OnMiss;
+    public UnityEvent OnAllKunaiCommitted;
+    
 
     private bool _isMinigameRunning = false;
 
@@ -35,8 +47,13 @@ public class MinigameDriver : MonoBehaviour
 
         if (_isInBulletTime)
         {
+           
+
             if (_currentlyTargetedFish == null)
-                DetectNewFish();
+            {
+                UpdateTargetableFish();
+                TargetFirstFish();
+            }
             
             if (_currentlyTargetedFish != null)
             {
@@ -53,16 +70,31 @@ public class MinigameDriver : MonoBehaviour
 
 
     //internals
-    private void DetectNewFish()
+    private void UpdateTargetableFish()
     {
         //Debug.Log("Detecting Fish...");
-        if (_targetableFishList == null)
-            _targetableFishList = _despawner.GetInRangeFish();
+        if (_inRangeFishList == null)
+            _inRangeFishList = _despawner.GetInRangeFish();
+        if (_markedFishList == null)
+            _markedFishList = _kunaiThrower.GetMarkedFish();
 
-        if (_targetableFishList.Count > 0)
+        _targetableFish.Clear();
+        if (_inRangeFishList.Count > 0)
         {
-            _currentlyTargetedFish = _targetableFishList[0];
+            for (int i = 0; i < _inRangeFishList.Count; i++)
+            {
+                if (!_markedFishList.Contains(_inRangeFishList[i]))
+                    _targetableFish.Add(_inRangeFishList[i]);
+            }
         }
+
+        _kunaiCommitted = _markedFishList.Count;
+    }
+
+    private void TargetFirstFish()
+    {
+        if (_targetableFish.Count > 0)
+            _currentlyTargetedFish = _targetableFish[0];
     }
     
     
@@ -76,7 +108,7 @@ public class MinigameDriver : MonoBehaviour
         }
 
         _minigameRectTransform.position = _mainCam.WorldToScreenPoint(_currentlyTargetedFish.transform.position);
-
+        ThrowKunaiOnActionPress();
 
     }
 
@@ -90,20 +122,22 @@ public class MinigameDriver : MonoBehaviour
 
     private void ChangeFishTarget(int direction)
     {
-        if (_targetableFishList.Count > 1)
+        if (_targetableFish.Count > 1)
         {
-            int currentFishindex = _targetableFishList.IndexOf(_currentlyTargetedFish);
+            int currentFishindex = _targetableFish.IndexOf(_currentlyTargetedFish);
 
             //if we're at the first index (and moving backwards), then go to the end of the list
             if ( currentFishindex == 0 && direction == -1)
-                _currentlyTargetedFish = _targetableFishList[_targetableFishList.Count - 1];
+                _currentlyTargetedFish = _targetableFish[_targetableFish.Count - 1];
 
             //else if were at the last index (and moving forwards), then go to the start of the list
-            else if (currentFishindex == _targetableFishList.Count - 1 && direction == 1)
-                _currentlyTargetedFish = _targetableFishList[0];
+            else if (currentFishindex == _targetableFish.Count - 1 && direction == 1)
+                _currentlyTargetedFish = _targetableFish[0];
 
             else
-                _currentlyTargetedFish = _targetableFishList[currentFishindex + direction];
+                _currentlyTargetedFish = _targetableFish[currentFishindex + direction];
+
+            _minigame.ResetCycler();
         }
     }
 
@@ -118,6 +152,26 @@ public class MinigameDriver : MonoBehaviour
             OnExitBulletTimeAction?.Invoke();
         }
     }
+
+    private void ThrowKunaiOnActionPress()
+    {
+        if (_actionInput)
+        {
+            _minigame.FreezeCycler();
+            bool fishHit = _minigame.IsRunnerOnSweetSpot();
+            OnKunaiThrown?.Invoke(fishHit, _currentlyTargetedFish);
+
+            if (fishHit)
+                OnHit?.Invoke();
+            else OnMiss?.Invoke();
+
+            _kunaiCommitted++;
+            if (_kunaiCommitted == _kunaiManager.KunaiCount())
+                OnAllKunaiCommitted?.Invoke();
+        }
+    }
+
+
 
     //externals
     public void RespondToBulletTimeEntered()
@@ -136,6 +190,27 @@ public class MinigameDriver : MonoBehaviour
     }
     public void RespondToFishOutOfRange(GameObject fish)
     {
+        UpdateTargetableFish();
+
+        if (fish == _currentlyTargetedFish)
+        {
+            _currentlyTargetedFish = null;
+
+            if (_isMinigameRunning)
+            {
+                _isMinigameRunning = false;
+                _minigame.CloseCycler();
+            }
+        }
+    }
+
+    public void RespondToFishInRange(GameObject fish)
+    {
+        UpdateTargetableFish();
+    }
+
+    public void RespondToFishMarked(GameObject fish)
+    {
         if (fish == _currentlyTargetedFish)
         {
             _currentlyTargetedFish = null;
@@ -150,6 +225,13 @@ public class MinigameDriver : MonoBehaviour
 
 
 
+
+    public void LogThrow(bool result)
+    {
+        if (result)
+            Debug.Log("Kunai HIT!!!");
+        else Debug.Log("MISSED!");
+    }
 
 
 

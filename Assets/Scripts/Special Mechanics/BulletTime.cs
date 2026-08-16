@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class BulletTime : MonoBehaviour
 {
+
+    [SerializeField] private KunaiManager _kunaiManager;
     [SerializeField] private SpriteRenderer _bulletTimeGraphic;
     [SerializeField] private float _inactiveAlpha;
     [SerializeField] private float _activeAlpha;
@@ -41,10 +43,11 @@ public class BulletTime : MonoBehaviour
             TickTransition();
 
         if (_isInBulletTime)
+        {
             TickBulletTime();
+        }
 
     }
-
 
 
 
@@ -64,7 +67,7 @@ public class BulletTime : MonoBehaviour
         if (!_isInBulletTime)
         {
             _currentTransitionTime += Time.unscaledDeltaTime;
-           _transitionAlpha = Mathf.Lerp(_inactiveAlpha, _activeAlpha, _currentTransitionTime / _transitionDuration);
+            _transitionAlpha = Mathf.Lerp(_inactiveAlpha, _activeAlpha, _currentTransitionTime / _transitionDuration);
             _bulletTimeGraphic.color = new Color(_bulletTimeGraphic.color.r, _bulletTimeGraphic.color.g, _bulletTimeGraphic.color.b, _transitionAlpha); 
             Time.timeScale = Mathf.Lerp(1, _bulletTimeScale, _currentTransitionTime / _transitionDuration);
             
@@ -90,7 +93,7 @@ public class BulletTime : MonoBehaviour
                 _currentTransitionTime = 0;
                 _isTransitioning = false;
                 _isInBulletTime = false;
-                OnBulletTimeExited?.Invoke();
+
             }
         }
     }
@@ -100,7 +103,7 @@ public class BulletTime : MonoBehaviour
 
     public void EnterBulletTime()
     {
-        if (!_isTransitioning && !_isInBulletTime)
+        if (!_isTransitioning && !_isInBulletTime && _kunaiManager.KunaiCount() > 0)
         {
             _isTransitioning = true;
         }
@@ -113,6 +116,7 @@ public class BulletTime : MonoBehaviour
         {
             _currentBulletTime = 0;
             _isTransitioning = true;
+            OnBulletTimeExited?.Invoke();
         }
     }
 

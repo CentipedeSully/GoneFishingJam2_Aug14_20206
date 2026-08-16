@@ -7,6 +7,8 @@ public class FishDespawner : MonoBehaviour
 {
     [SerializeField] private Transform _inactiveFishContainer;
     [SerializeField] private List<GameObject> _spawnedFish = new();
+    [SerializeField] private List<GameObject> _despawnFish = new();
+
     [SerializeField] private Transform _waterEscapePoint;
     [SerializeField] private Transform _leftTargetingLimit;
     [SerializeField] private Transform _rightTargetingLimit;
@@ -16,6 +18,8 @@ public class FishDespawner : MonoBehaviour
 
     [SerializeField] private List<GameObject> _inRangeFish = new();
     [SerializeField] private List<GameObject> _outOfRangeFish = new();
+
+    IEnumerator _fishDespawner;
 
     [Header("UnityEvents")]
     public UnityEvent<GameObject> OnFishDespawned;
@@ -31,39 +35,67 @@ public class FishDespawner : MonoBehaviour
         {
             UpdateFishRange(fish);
 
+            //remove the fish if it escapes into the river
             if (fish.transform.position.y <= _waterEscapePoint.position.y)
             {
-                //clear the fish from both range lists
-                if (_inRangeFish.Contains(fish))
-                {
-                    _inRangeFish.Remove(fish);
-                    OnRangeExited?.Invoke(fish);
-                }
-                else if (_outOfRangeFish.Contains(fish))
-                {
-                    _outOfRangeFish.Remove(fish);
-                }
-
-                //deactivate and pool the fish for later
-                fish.SetActive(false);
-                fish.transform.SetParent(_inactiveFishContainer);
-                OnFishDespawned?.Invoke(fish);
+                _despawnFish.Add(fish);
             }
+        }
+
+        DespawnFish();
+    }
+
+    private IEnumerator DespawnFishAtEOF()
+    {
+        yield return new WaitForEndOfFrame();
+
+        for (int i = _despawnFish.Count -1; i >= 0; i--)
+        {
+            GameObject fish = _despawnFish[i];
+
+            //clear the fish from both range lists
+            if (_inRangeFish.Contains(fish))
+            {
+                _inRangeFish.Remove(fish);
+                OnRangeExited?.Invoke(fish);
+            }
+            else if (_outOfRangeFish.Contains(fish))
+            {
+                _outOfRangeFish.Remove(fish);
+            }
+
+            //deactivate and pool the fish for later
+            fish.SetActive(false);
+            fish.transform.SetParent(_inactiveFishContainer);
+            _spawnedFish.Remove(fish);
+            _despawnFish.Remove(fish);
+
+            OnFishDespawned?.Invoke(fish);
+        }
+
+        _fishDespawner = null;
+    }
+
+    private void DespawnFish()
+    {
+        if (_fishDespawner == null)
+        {
+            _fishDespawner = DespawnFishAtEOF();
+            
+            StartCoroutine(DespawnFishAtEOF());
         }
     }
 
 
-
-
     private void UpdateFishRange(GameObject fish)
     {
-        //update the fish's current targeting range
+        //update fish as out of range if it's out of range
         if (fish.transform.position.x < _leftTargetingLimit.position.x ||
             fish.transform.position.x > _rightTargetingLimit.position.x ||
             fish.transform.position.y > _upperTargetingLimit.position.y ||
             fish.transform.position.y < _lowestTargetingLimit.position.y)
         {
-            //update fish as out of range
+            
             if (_inRangeFish.Contains(fish))
             {
                 _inRangeFish.Remove(fish);
@@ -72,9 +104,10 @@ public class FishDespawner : MonoBehaviour
             }
         }
 
+        //update fish as in range in re-entering range
         else
         {
-            //add to the 'inRange' list if not out of range (& not already in the list)
+            
             if (!_inRangeFish.Contains(fish))
             {
                 _inRangeFish.Add(fish);
@@ -95,6 +128,14 @@ public class FishDespawner : MonoBehaviour
     {
         return _inRangeFish;
 
+    }
+ 
+    public void RespondToFishHit(GameObject fish)
+    {
+        if (!_despawnFish.Contains(fish))
+            _despawnFish.Add(fish);
+
+        DespawnFish();
     }
 
 }

@@ -121,8 +121,23 @@ public class TimedClickMiniGame : MonoBehaviour
     }
 
     
-  
+    public void ResetCycler()
+    {
+        _currentValue = 0;
+        CalculateSweetSpot();
+    }
 
+    public bool IsRunnerOnSweetSpot()
+    {
+        float distanceFromMinBar = Mathf.Abs(Mathf.DeltaAngle(_playerRunner.rotation.eulerAngles.z, _minRunner.rotation.eulerAngles.z));
+        //Debug.Log($"Runner Distance from Minbar: {distanceFromMinBar}");
+        float distanceFromMaxBar = Mathf.Abs(Mathf.DeltaAngle(_playerRunner.rotation.eulerAngles.z, _maxRunner.rotation.eulerAngles.z));
+        //Debug.Log($"Runner Distance from Maxbar: {distanceFromMaxBar}");
+
+        if (distanceFromMinBar <= _sweetSpotRange * 2 && distanceFromMaxBar <= _sweetSpotRange * 2)
+            return true;
+        return false;
+    }
 
     //Debug
     private void ListenForDebugCommands()
