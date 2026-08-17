@@ -9,6 +9,7 @@ public class KunaiThrower : MonoBehaviour
     [SerializeField] private BulletTime _bulletTimeController;
     [SerializeField] private KunaiManager _kunaiManager;
     [SerializeField] private GameObject _throwPrefab;
+    [SerializeField] private GameObject _hitPrefab;
     private Dictionary<GameObject, bool> _throwResults = new();
     private Dictionary<GameObject, GameObject> _fishWithIcons = new();
     private List<GameObject> _currentlyMarkedFish = new();
@@ -49,7 +50,19 @@ public class KunaiThrower : MonoBehaviour
             _kunaiManager.DecrementKunai();
 
             if (entry.Value)
+            {
+                //spawn a hit effect at the fish's position
+                GameObject newHiteEffect = Instantiate(_hitPrefab, entry.Key.transform.position, Quaternion.identity);
+
+                //make sure the sprite of the catch matches the hit effect
+                Sprite sprite = entry.Key.GetComponentInChildren<SpriteRenderer>().sprite;
+                newHiteEffect.GetComponentInChildren<SpriteRenderer>().sprite = sprite;
+
+                //activate the hit effect, too
+                newHiteEffect.GetComponent<HitShake>().TriggerShake();
+
                 OnFishHit?.Invoke(entry.Key);
+            }
             else OnFishMissed?.Invoke(entry.Key);
         }
 

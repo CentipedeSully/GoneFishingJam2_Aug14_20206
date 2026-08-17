@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1023076356119612446
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 332952668623975190, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -214036285, guid: 8ab5f7de8b7feca4eb3794dda23762c7, type: 3}
+    - target: {fileID: 4376890656817513289, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_Name
+      value: Salmon Hit Effect Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234572592374321647, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -5848901359071686613, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+    - {fileID: 3085712169153180290, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4376890656817513289, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 361822795923828615}
+  m_SourcePrefab: {fileID: 100100000, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+--- !u!212 &769077831996407560 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 332952668623975190, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+  m_PrefabInstance: {fileID: 1023076356119612446}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3643240962698366807 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4376890656817513289, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+  m_PrefabInstance: {fileID: 1023076356119612446}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &361822795923828615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3643240962698366807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41889ec37fe0e764fa60a1b0b2568434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 0.05
+  _magnitude: 0.15
+  _frequency: 0.01
+  _isShaking: 0
+  _destoryDelay: 1
+  _animator: {fileID: 3718851162292977346}
+  _spriteRenderer: {fileID: 769077831996407560}
+  OnShakeStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShakeEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 361822795923828615}
+        m_TargetAssemblyTypeName: HitShake, Assembly-CSharp
+        m_MethodName: DestroySelfAfterDelay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!95 &3718851162292977346 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4444685506304357084, guid: cec2ee75ceaccd0429ece731b7e42819, type: 3}
+  m_PrefabInstance: {fileID: 1023076356119612446}
+  m_PrefabAsset: {fileID: 0}
