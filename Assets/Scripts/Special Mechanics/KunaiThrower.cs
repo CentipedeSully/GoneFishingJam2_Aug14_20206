@@ -21,6 +21,7 @@ public class KunaiThrower : MonoBehaviour
     private List<GameObject> _currentlyMarkedFish = new();
 
     [Header("UnityEvents")]
+    public UnityEvent<int> OnKunaiThrown;
     public UnityEvent<GameObject> OnFishMarked;
     public UnityEvent<GameObject> OnFishLeftRange;
     public UnityEvent<GameObject> OnFishHit;
@@ -51,9 +52,11 @@ public class KunaiThrower : MonoBehaviour
 
     public void RespondToBulletTimeEnd()
     {
+        int kunaiThrown = 0;
         foreach(KeyValuePair<GameObject,bool> entry in _throwResults)
         {
             _kunaiManager.DecrementKunai();
+            kunaiThrown++;
 
             if (entry.Value)
             {
@@ -94,6 +97,9 @@ public class KunaiThrower : MonoBehaviour
         _throwResults.Clear();
         _fishWithIcons.Clear();
         _currentlyMarkedFish.Clear();
+
+        if (kunaiThrown > 0)
+            OnKunaiThrown?.Invoke(kunaiThrown);
     }
     
     public void RespondToFishOutOfRange(GameObject fish)
@@ -124,10 +130,6 @@ public class KunaiThrower : MonoBehaviour
         _bulletTimeController.ExitBulletTime();
     }
 
-    public void RespondToFishMissed(GameObject fish)
-    {
-        
-    }
 
 
 

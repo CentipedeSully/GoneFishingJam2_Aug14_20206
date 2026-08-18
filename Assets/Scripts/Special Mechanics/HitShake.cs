@@ -13,6 +13,9 @@ public class HitShake : MonoBehaviour
     [SerializeField] private float _destoryDelay = 1f;
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private bool _shakeRectTransform = false;
+    [SerializeField] private float _rectTransformMagMultiplier = 10;
+    private RectTransform _rectTransform;
     private float _currentTime = 0;
     private float _freqencyCounter = 0;
     private Vector3 _positionBeforeShake;
@@ -22,6 +25,12 @@ public class HitShake : MonoBehaviour
     public UnityEvent OnShakeStarted;
     public UnityEvent OnShakeEnded;
 
+
+    private void Awake()
+    {
+        if (_shakeRectTransform)
+            _rectTransform = GetComponent<RectTransform>();
+    }
 
     private void Update()
     {
@@ -37,11 +46,25 @@ public class HitShake : MonoBehaviour
 
         if (_freqencyCounter >= _frequency)
         {
-            _xRandomized = Random.Range(-_magnitude, _magnitude);
-            _yRandomized = Random.Range(-_magnitude, _magnitude);
+            if (_shakeRectTransform)
+            {
+                float magnitude = _rectTransformMagMultiplier * _magnitude;
+                _xRandomized = Random.Range(-magnitude, magnitude);
+                _yRandomized = Random.Range(-magnitude, magnitude);
+            }
+            else
+            {
+                _xRandomized = Random.Range(-_magnitude, _magnitude);
+                _yRandomized = Random.Range(-_magnitude, _magnitude);
+            }
+                
 
             _randomizedOffset = new Vector3(_xRandomized, _yRandomized, 0);
-            transform.position = _positionBeforeShake + _randomizedOffset;
+
+            if (_shakeRectTransform)
+                _rectTransform.position = _positionBeforeShake + _randomizedOffset;
+            else
+                transform.position = _positionBeforeShake + _randomizedOffset;
 
             _freqencyCounter = 0;
         }
@@ -65,7 +88,12 @@ public class HitShake : MonoBehaviour
         }
 
         _isShaking = true;
-        _positionBeforeShake = transform.position;
+
+        if (_shakeRectTransform)
+            _positionBeforeShake = _rectTransform.position;
+        else
+            _positionBeforeShake = transform.position;
+
         OnShakeStarted?.Invoke();
     }
 
@@ -74,7 +102,11 @@ public class HitShake : MonoBehaviour
         _isShaking = false;
         _currentTime = 0;
         _freqencyCounter = 0;
-        transform.position = _positionBeforeShake;
+
+        if (_shakeRectTransform)
+            _rectTransform.position = _positionBeforeShake;
+        else
+            transform.position = _positionBeforeShake;
 
         OnShakeEnded?.Invoke();
 

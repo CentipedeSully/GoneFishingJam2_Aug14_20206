@@ -12,9 +12,7 @@ public class KunaiManager : MonoBehaviour
     [SerializeField] private float _kunaiRegenTime = .75f;
     [SerializeField] private float _regenCooldown = 2f;
     [SerializeField] private float _currentKunaiRegen = 0;
-    private int _latestKunai = 2;
     private bool _regenReady = true;
-
 
 
 
@@ -34,8 +32,7 @@ public class KunaiManager : MonoBehaviour
             {
                 _currentKunaiRegen = 0;
                 _kunaiAvailable++;
-                _latestKunai++;
-                _kunaiContainer.GetChild(_latestKunai).gameObject.SetActive(true);
+                AnimateKunaiRegen();
             }
         }
     }
@@ -51,11 +48,9 @@ public class KunaiManager : MonoBehaviour
         if (_kunaiAvailable > 0)
         {
             CancelInvoke();
-            _kunaiContainer.GetChild(_latestKunai).gameObject.SetActive(false);
-            
+            AnimateKunaiAsThrown();
 
             _kunaiAvailable--;
-            _latestKunai--;
             _regenReady = false;
 
             Invoke(nameof(ReadyRegen), _regenCooldown);
@@ -64,6 +59,72 @@ public class KunaiManager : MonoBehaviour
     }
 
     public int KunaiCount() {  return _kunaiAvailable; }
+
+    public void CommitKunai()
+    {
+        for (int i = _maxKunai - 1;i>=0; i--)
+        {
+            Animator kunaiAnimator = _kunaiContainer.GetChild(i).GetComponent<Animator>();
+            if (!kunaiAnimator.GetBool("isCommitted"))
+            {
+                kunaiAnimator.SetBool("isCommitted", true);
+                return;
+            }
+        }
+    }
+    public void UncommitKunai()
+    {
+        for (int i = _maxKunai - 1; i >= 0; i--)
+        {
+            Animator kunaiAnimator = _kunaiContainer.GetChild(i).GetComponent<Animator>();
+            if (kunaiAnimator.GetBool("isCommitted"))
+            {
+                kunaiAnimator.SetBool("isCommitted", false);
+                return;
+            }
+        }
+    }
+    public void UncommitAllKunai()
+    {
+        for (int i = _maxKunai - 1; i >= 0; i--)
+        {
+            Animator kunaiAnimator = _kunaiContainer.GetChild(i).GetComponent<Animator>();
+            if (kunaiAnimator.GetBool("isCommitted"))
+            {
+                kunaiAnimator.SetBool("isCommitted", false);
+            }
+        }
+    }
+
+    public void AnimateKunaiAsThrown()
+    {
+        for (int i = _maxKunai - 1; i >= 0; i--)
+        {
+            Animator kunaiAnimator = _kunaiContainer.GetChild(i).GetComponent<Animator>();
+            if (!kunaiAnimator.GetBool("isGone"))
+            {
+                
+                kunaiAnimator.SetTrigger("onThrow");
+                kunaiAnimator.SetBool("isGone", true);
+                if (kunaiAnimator.GetBool("isCommitted"))
+                    kunaiAnimator.SetBool("isCommitted", false);
+                return;
+            }
+        }
+    }
+
+    public void AnimateKunaiRegen()
+    {
+        for (int i = _maxKunai - 1; i >= 0; i--)
+        {
+            Animator kunaiAnimator = _kunaiContainer.GetChild(i).GetComponent<Animator>();
+            if (kunaiAnimator.GetBool("isGone"))
+            {
+                kunaiAnimator.SetBool("isGone", false);
+                return;
+            }
+        }
+    }
 
 
 }

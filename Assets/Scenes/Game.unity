@@ -2640,6 +2640,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1338561281}
+        m_TargetAssemblyTypeName: KunaiManager, Assembly-CSharp
+        m_MethodName: UncommitAllKunai
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _debugActive: 1
   _cmdToggleBulletTime: 0
 --- !u!114 &440975380
@@ -2792,6 +2804,21 @@ MonoBehaviour:
   _missPrefab: {fileID: 4981794077671209815, guid: b6bea1115dd554c4384308644091f99c, type: 3}
   _targetLostPrefab: {fileID: 2158387273881209673, guid: d922afe8af0fc2c4b9aaee850fc6cd34, type: 3}
   _salmonCapturedPrefab: {fileID: 5386965373541972753, guid: 7509e31de89965a46851927d08fe12af, type: 3}
+  OnKunaiThrown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1338561282}
+        m_TargetAssemblyTypeName: HitShake, Assembly-CSharp
+        m_MethodName: TriggerShake
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnFishMarked:
     m_PersistentCalls:
       m_Calls:
@@ -2807,9 +2834,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1338561281}
+        m_TargetAssemblyTypeName: KunaiManager, Assembly-CSharp
+        m_MethodName: CommitKunai
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnFishLeftRange:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1338561281}
+        m_TargetAssemblyTypeName: KunaiManager, Assembly-CSharp
+        m_MethodName: UncommitKunai
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnFishHit:
     m_PersistentCalls:
       m_Calls:
@@ -8156,6 +8207,7 @@ GameObject:
   - component: {fileID: 1338561279}
   - component: {fileID: 1338561280}
   - component: {fileID: 1338561281}
+  - component: {fileID: 1338561282}
   m_Layer: 5
   m_Name: Kunai Belt
   m_TagString: Untagged
@@ -8203,14 +8255,14 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 5
-  m_Spacing: -100
+  m_Spacing: -58.74
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+  m_ReverseArrangement: 1
 --- !u!114 &1338561281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8230,6 +8282,33 @@ MonoBehaviour:
   _kunaiRegenTime: 0.75
   _regenCooldown: 2
   _currentKunaiRegen: 0
+--- !u!114 &1338561282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338561278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41889ec37fe0e764fa60a1b0b2568434, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 0.1
+  _magnitude: 2.5
+  _frequency: 0.02
+  _isShaking: 0
+  _destoryDelay: 1
+  _animator: {fileID: 0}
+  _spriteRenderer: {fileID: 0}
+  _shakeRectTransform: 1
+  _rectTransformMagMultiplier: 10
+  OnShakeStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShakeEnded:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1358441023
 GameObject:
   m_ObjectHideFlags: 0
@@ -8701,37 +8780,11 @@ Transform:
   - {fileID: 2034779541}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1512413175 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6662279132902509181, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
-  m_PrefabInstance: {fileID: 3210111762410915671}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1512413176 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9169063555598523126, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
   m_PrefabInstance: {fileID: 3210111762410915671}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1512413180
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1512413175}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bb55fe8badad6b342b73075cdc4735a4, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1517164767
 GameObject:
   m_ObjectHideFlags: 0
@@ -12478,10 +12531,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kunai
       objectReference: {fileID: 0}
-    - target: {fileID: 6662279132902509181, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9169063555598523126, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -12565,10 +12614,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6662279132902509181, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1512413180}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
