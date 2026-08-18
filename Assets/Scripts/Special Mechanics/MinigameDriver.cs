@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class MinigameDriver : MonoBehaviour
 {
+    [SerializeField] private Transform _uiContainer;
+    [SerializeField] private GameObject _targetLostFeedbackPrefab;
     [SerializeField] private RectTransform _minigameRectTransform;
     [SerializeField] private TimedClickMiniGame _minigame;
     [SerializeField] private Camera _mainCam;
@@ -187,6 +189,7 @@ public class MinigameDriver : MonoBehaviour
             _isMinigameRunning = false;
             _minigame.CloseCycler();
         }
+        _currentlyTargetedFish = null;
     }
     public void RespondToFishOutOfRange(GameObject fish)
     {
@@ -194,6 +197,10 @@ public class MinigameDriver : MonoBehaviour
 
         if (fish == _currentlyTargetedFish)
         {
+            Vector3 screenPosition = _mainCam.WorldToScreenPoint(fish.transform.position);
+            GameObject targetLostEffect = Instantiate(_targetLostFeedbackPrefab, _uiContainer);
+            targetLostEffect.GetComponent<RectTransform>().position = screenPosition;
+
             _currentlyTargetedFish = null;
 
             if (_isMinigameRunning)

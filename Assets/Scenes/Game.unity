@@ -2694,6 +2694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4957a4a7f66f70e4c834d06fb058d2d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiContainer: {fileID: 97509108}
+  _targetLostFeedbackPrefab: {fileID: 2158387273881209673, guid: d922afe8af0fc2c4b9aaee850fc6cd34, type: 3}
   _minigameRectTransform: {fileID: 781628122}
   _minigame: {fileID: 440975380}
   _mainCam: {fileID: 519420031}
@@ -2781,10 +2783,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e92a1b6e6c99df4691ac8876c5edfa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainCam: {fileID: 519420031}
+  _UiContainer: {fileID: 97509108}
   _bulletTimeController: {fileID: 440975379}
   _kunaiManager: {fileID: 1338561281}
   _throwPrefab: {fileID: 2253584201153786134, guid: 18256ff4d8827a741baa5b83c6209bcd, type: 3}
   _hitPrefab: {fileID: 3643240962698366807, guid: 9b5c103a3c2ef02478485b4cf9e8d708, type: 3}
+  _missPrefab: {fileID: 4981794077671209815, guid: b6bea1115dd554c4384308644091f99c, type: 3}
+  _targetLostPrefab: {fileID: 2158387273881209673, guid: d922afe8af0fc2c4b9aaee850fc6cd34, type: 3}
+  _salmonCapturedPrefab: {fileID: 5386965373541972753, guid: 7509e31de89965a46851927d08fe12af, type: 3}
   OnFishMarked:
     m_PersistentCalls:
       m_Calls:
@@ -2832,7 +2839,19 @@ MonoBehaviour:
         m_CallState: 2
   OnFishMissed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 440975382}
+        m_TargetAssemblyTypeName: KunaiThrower, Assembly-CSharp
+        m_MethodName: RespondToFishMissed
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &447161427
 GameObject:
   m_ObjectHideFlags: 0
@@ -8184,7 +8203,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 5
-  m_Spacing: 0
+  m_Spacing: -100
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -11852,7 +11871,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

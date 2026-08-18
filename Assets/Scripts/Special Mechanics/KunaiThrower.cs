@@ -3,13 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class KunaiThrower : MonoBehaviour
 {
+    [SerializeField] private Camera _mainCam;
+    [SerializeField] private Transform _UiContainer;
     [SerializeField] private BulletTime _bulletTimeController;
     [SerializeField] private KunaiManager _kunaiManager;
     [SerializeField] private GameObject _throwPrefab;
     [SerializeField] private GameObject _hitPrefab;
+    [SerializeField] private GameObject _missPrefab;
+    [SerializeField] private GameObject _targetLostPrefab;
+    [SerializeField] private GameObject _salmonCapturedPrefab;
     private Dictionary<GameObject, bool> _throwResults = new();
     private Dictionary<GameObject, GameObject> _fishWithIcons = new();
     private List<GameObject> _currentlyMarkedFish = new();
@@ -61,9 +67,20 @@ public class KunaiThrower : MonoBehaviour
                 //activate the hit effect, too
                 newHiteEffect.GetComponent<HitShake>().TriggerShake();
 
+                Vector3 screenPosition = _mainCam.WorldToScreenPoint(newHiteEffect.transform.position);
+                GameObject capturedEffect = Instantiate(_salmonCapturedPrefab, _UiContainer, false);
+                capturedEffect.GetComponent<RectTransform>().position = screenPosition;
+
                 OnFishHit?.Invoke(entry.Key);
             }
-            else OnFishMissed?.Invoke(entry.Key);
+            else
+            {
+                Vector3 screenPosition = _mainCam.WorldToScreenPoint(entry.Key.transform.position);
+                GameObject missEffect = Instantiate(_missPrefab, _UiContainer,false);
+                missEffect.GetComponent<RectTransform>().position = screenPosition;
+
+                OnFishMissed?.Invoke(entry.Key);
+            }
         }
 
         foreach(KeyValuePair<GameObject, GameObject> entry in _fishWithIcons)
@@ -91,6 +108,11 @@ public class KunaiThrower : MonoBehaviour
             
             _currentlyMarkedFish.Remove(fish);
 
+            Vector3 screenPosition = _mainCam.WorldToScreenPoint(fish.transform.position);
+            GameObject targetLostEffect = Instantiate(_targetLostPrefab, _UiContainer);
+            targetLostEffect.GetComponent<RectTransform>().position = screenPosition;
+
+
             OnFishLeftRange?.Invoke(fish);
         }
     }
@@ -102,7 +124,10 @@ public class KunaiThrower : MonoBehaviour
         _bulletTimeController.ExitBulletTime();
     }
 
-
+    public void RespondToFishMissed(GameObject fish)
+    {
+        
+    }
 
 
 
