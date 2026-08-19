@@ -60,6 +60,7 @@ public class FishBehaviour : MonoBehaviour
     {
         _speed = speed;
     }
+    public float GetSpeed() { return _speed; }
 
 
 

@@ -44,6 +44,22 @@ public class AudioController : MonoBehaviour
     private bool _isDelayingSalmonPlay = false;
     private int _delayedPlayTimes;
 
+
+    [Header("UpSplash (OneShot) Audio Settings")]
+    [SerializeField] private AudioClip _upsplashClip;
+    [SerializeField] private float _upsplashPitchBaseline = 1;
+    [SerializeField] private float _upsplashPitchRange = .2f;
+    [SerializeField] private float _upsplashBaseVolume = .5f;
+    [SerializeField] private bool _cmdTriggerUpsplashEffect;
+
+    [Header("DownSplash (OneShot) Audio Settings")]
+    [SerializeField] private AudioClip _downsplashClip;
+    [SerializeField] private float _downsplashPitchBaseline = 1;
+    [SerializeField] private float _downsplashPitchRange = .2f;
+    [SerializeField] private float _downsplashBaseVolume = .5f;
+    [SerializeField] private bool _cmdTriggerDownsplashEffect;
+
+
     /*
     [Header("Salmon Hit (OneShot) Audio Settings")]
     [SerializeField] private AudioClip _HitClip;
@@ -159,6 +175,20 @@ public class AudioController : MonoBehaviour
         _delayedPlayTimes = times;
     }
 
+    public void PlayUpsplashAudio()
+    {
+        _oneShotSource.pitch = GetRandomizedPitch(_upsplashPitchBaseline, _upsplashPitchRange);
+        _oneShotSource.volume = _upsplashBaseVolume;
+        _oneShotSource.PlayOneShot(_upsplashClip);
+    }
+
+    public void PlayDownsplashAudio()
+    {
+        _oneShotSource.pitch = GetRandomizedPitch(_downsplashPitchBaseline, _downsplashPitchRange);
+        _oneShotSource.volume = _downsplashBaseVolume;
+        _oneShotSource.PlayOneShot(_downsplashClip);
+    }
+
 
 
 
@@ -181,6 +211,18 @@ public class AudioController : MonoBehaviour
         {
             _cmdTriggerSalmonHitEffect = false;
             PlaySalmonHitAudio(_hitsToPerform);
+        }
+
+        if (_cmdTriggerUpsplashEffect)
+        {
+            _cmdTriggerUpsplashEffect = false;
+            PlayUpsplashAudio();
+        }
+
+        if (_cmdTriggerDownsplashEffect)
+        {
+            _cmdTriggerDownsplashEffect = false;
+            PlayDownsplashAudio();
         }
     }
 

@@ -38,17 +38,21 @@ public class FishDespawner : MonoBehaviour
             //remove the fish if it escapes into the river
             if (fish.transform.position.y <= _waterEscapePoint.position.y)
             {
-                _despawnFish.Add(fish);
+                if (!_despawnFish.Contains(fish))
+                    _despawnFish.Add(fish);
+                
             }
         }
+        if (_despawnFish.Count > 0)
+            DespawnFish();
 
-        DespawnFish();
     }
 
     private IEnumerator DespawnFishAtEOF()
     {
+        //Debug.Log("despawn enumerator called. Awaiting EOF");
         yield return new WaitForEndOfFrame();
-
+        //Debug.Log($"EOF reached. despawning {_despawnFish.Count} fish...");
         for (int i = _despawnFish.Count -1; i >= 0; i--)
         {
             GameObject fish = _despawnFish[i];
@@ -70,20 +74,28 @@ public class FishDespawner : MonoBehaviour
             _spawnedFish.Remove(fish);
             _despawnFish.Remove(fish);
 
+           // Debug.Log($"fish's parent set to {fish.transform.parent.name}. Fish activation status: {fish.activeSelf}");
+
             OnFishDespawned?.Invoke(fish);
         }
+
+        //Debug.Log("reached end of despawn enumerator.");
 
         _fishDespawner = null;
     }
 
     private void DespawnFish()
     {
+        //Debug.Log($"requesting Fish Despawn. Fish detected in despawnList: {_despawnFish.Count}");
         if (_fishDespawner == null)
         {
+            //Debug.Log($"despawner initialized. starting enumerator");
             _fishDespawner = DespawnFishAtEOF();
             
             StartCoroutine(DespawnFishAtEOF());
         }
+        //else
+            //Debug.Log($"despawner already active. Ignoring request for this frame");
     }
 
 

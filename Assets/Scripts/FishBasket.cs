@@ -11,7 +11,7 @@ public class FishBasket : MonoBehaviour
     [SerializeField] private List<int> _spriteThresholds = new();
     private int _currentThreshold = 0;
     [SerializeField] private int _salmonCaught = 0;
-
+    private Animator _animator;
 
 
 
@@ -29,6 +29,9 @@ public class FishBasket : MonoBehaviour
                 _spriteAmountFeedbacks[i].SetActive(true);
             else _spriteAmountFeedbacks[i].SetActive(false);
         }
+
+        _animator = GetComponent<Animator>();
+        _animator.updateMode = AnimatorUpdateMode.UnscaledTime;
     }
 
 
@@ -49,6 +52,9 @@ public class FishBasket : MonoBehaviour
             _spriteAmountFeedbacks[_currentThreshold].SetActive(true);
         }
     }
-
+    public void AnimateFishAdded()
+    {
+        _animator.SetTrigger("OnFishAdded");
+    }
     public int GetSalmonCaught() { return _salmonCaught; }
 }
