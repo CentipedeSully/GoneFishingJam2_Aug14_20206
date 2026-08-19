@@ -14,7 +14,14 @@ public class KunaiManager : MonoBehaviour
     [SerializeField] private float _currentKunaiRegen = 0;
     private bool _regenReady = true;
 
+    public UnityEvent OnKunaiRegenerated;
 
+
+    private void Awake()
+    {
+        foreach(Animator animator in _kunaiContainer.GetComponentsInChildren<Animator>())
+            animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    }
 
     private void Update()
     {
@@ -32,7 +39,7 @@ public class KunaiManager : MonoBehaviour
             {
                 _currentKunaiRegen = 0;
                 _kunaiAvailable++;
-                AnimateKunaiRegen();
+                OnKunaiRegenerated?.Invoke();
             }
         }
     }
@@ -52,6 +59,7 @@ public class KunaiManager : MonoBehaviour
 
             _kunaiAvailable--;
             _regenReady = false;
+            _currentKunaiRegen = 0;
 
             Invoke(nameof(ReadyRegen), _regenCooldown);
         }

@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class BulletTime : MonoBehaviour
 {
-
+    [SerializeField] private Image _radialTimer;
     [SerializeField] private KunaiManager _kunaiManager;
     [SerializeField] private SpriteRenderer _bulletTimeGraphic;
+    [SerializeField] private Image _hourglass;
     [SerializeField] private float _inactiveAlpha;
     [SerializeField] private float _activeAlpha;
 
@@ -32,7 +34,14 @@ public class BulletTime : MonoBehaviour
     [SerializeField] private bool _cmdToggleBulletTime = false;
     private float _transitionAlpha;
 
+    float _remainingTime;
 
+
+    private void Start()
+    {
+        _radialTimer.gameObject.SetActive(false);
+        _hourglass.gameObject.SetActive(false);
+    }
 
     private void Update()
     {
@@ -55,6 +64,10 @@ public class BulletTime : MonoBehaviour
     private void TickBulletTime()
     {
         _currentBulletTime += Time.unscaledDeltaTime;
+        _remainingTime = _bulletTimeDuration - _currentBulletTime;
+        _radialTimer.fillAmount = _remainingTime/_bulletTimeDuration;
+        
+
         if (_currentBulletTime >= _bulletTimeDuration)
         {
             ExitBulletTime();
@@ -106,6 +119,10 @@ public class BulletTime : MonoBehaviour
         if (!_isTransitioning && !_isInBulletTime && _kunaiManager.KunaiCount() > 0)
         {
             _isTransitioning = true;
+            _radialTimer.gameObject.SetActive(true);
+            _hourglass.gameObject.SetActive(true);
+            _radialTimer.fillAmount = 1;
+            
         }
        
     }
@@ -114,6 +131,8 @@ public class BulletTime : MonoBehaviour
     {
         if (!_isTransitioning && _isInBulletTime)
         {
+            _radialTimer.gameObject.SetActive(false);
+            _hourglass.gameObject.SetActive(false);
             _currentBulletTime = 0;
             _isTransitioning = true;
             OnBulletTimeExited?.Invoke();
@@ -124,6 +143,8 @@ public class BulletTime : MonoBehaviour
     {
         return _isInBulletTime;
     }
+
+    public float GetBulletTimeDuration() { return _bulletTimeDuration; }
 
     private void ListenForDebugCommands()
     {

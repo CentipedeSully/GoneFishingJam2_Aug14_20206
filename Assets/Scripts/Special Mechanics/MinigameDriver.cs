@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class MinigameDriver : MonoBehaviour
 {
+    [SerializeField] private float _inputDelay = .1f;
+    private bool _isCoolingInput = false;
     [SerializeField] private Transform _uiContainer;
     [SerializeField] private GameObject _targetLostFeedbackPrefab;
     [SerializeField] private RectTransform _minigameRectTransform;
@@ -14,12 +16,11 @@ public class MinigameDriver : MonoBehaviour
     [SerializeField] private KunaiThrower _kunaiThrower;
     [SerializeField] private KunaiManager _kunaiManager;
     [SerializeField] private bool _isInBulletTime = false;
-    private bool _minigameCoolingDown = false;
+    [SerializeField] private Animator _arrowAnimator;
     private List<GameObject> _inRangeFishList;
     private List<GameObject> _markedFishList;
     private List<GameObject> _targetableFish = new();
     [SerializeField] private GameObject _currentlyTargetedFish;
-    [SerializeField] private float _minigameResponseDelay = .25f;
     private int _kunaiCommitted = 0;
     //[SerializeField] private List<GameObject> _markedFish = new();
 
@@ -42,6 +43,10 @@ public class MinigameDriver : MonoBehaviour
 
 
     //monobehaviours
+    private void Awake()
+    {
+        _arrowAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    }
     private void Update()
     {
         ListenForInput();
@@ -59,13 +64,28 @@ public class MinigameDriver : MonoBehaviour
             
             if (_currentlyTargetedFish != null)
             {
-                if (_nextInput)
+                if (_nextInput && !_isCoolingInput)
+                {
+                    CooldownInput();
                     ChangeFishTarget(1);
-                if (_prevInput)
+                }
+                    
+                if (_prevInput && !_isCoolingInput)
+                {
+                    CooldownInput();
                     ChangeFishTarget(-1);
+                }
 
                 DriveMinigameOnCurrentFish();
             }
+            if (_arrowAnimator.isActiveAndEnabled)
+            {
+                if (_targetableFish.Count > 1 && !_arrowAnimator.GetBool("isOptionsAvailable"))
+                    _arrowAnimator.SetBool("isOptionsAvailable", true);
+                else if (_targetableFish.Count <= 1 && _arrowAnimator.GetBool("isOptionsAvailable"))
+                    _arrowAnimator.SetBool("isOptionsAvailable", false);
+            }
+            
         }
     }
 
@@ -91,6 +111,8 @@ public class MinigameDriver : MonoBehaviour
         }
 
         _kunaiCommitted = _markedFishList.Count;
+
+        
     }
 
     private void TargetFirstFish()
@@ -157,8 +179,10 @@ public class MinigameDriver : MonoBehaviour
 
     private void ThrowKunaiOnActionPress()
     {
-        if (_actionInput)
+        if (_actionInput! && !_isCoolingInput)
         {
+            CooldownInput();
+
             _minigame.FreezeCycler();
             bool fishHit = _minigame.IsRunnerOnSweetSpot();
             OnKunaiThrown?.Invoke(fishHit, _currentlyTargetedFish);
@@ -172,8 +196,13 @@ public class MinigameDriver : MonoBehaviour
                 OnAllKunaiCommitted?.Invoke();
         }
     }
+    private void CooldownInput()
+    {
+        _isCoolingInput = true;
+        Invoke(nameof(ReadyInput), _inputDelay);
 
-
+    }
+    private void ReadyInput() { _isCoolingInput = false; }
 
     //externals
     public void RespondToBulletTimeEntered()
