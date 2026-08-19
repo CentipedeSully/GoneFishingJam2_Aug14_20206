@@ -110,13 +110,6 @@ public class AudioController : MonoBehaviour
 
 
     //monobehaviors
-    private void Start()
-    {
-        _ambienceSource.Play();
-        _ambienceSource.volume = _ambienceVolume;
-        _musicSource.Play();
-        _musicSource.volume = _musicVolume;
-    }
 
     private void Update()
     {
@@ -323,6 +316,18 @@ public class AudioController : MonoBehaviour
         _completionSource.pitch = _completionPitchBaseline;
         _completionSource.volume = _completionBaseVolume;
         _completionSource.Play();
+    }
+
+    public void PlayAmbience()
+    {
+        _ambienceSource.Play();
+        _ambienceSource.volume = _ambienceVolume;
+    }
+
+    public void PlayMusic()
+    {
+        _musicSource.Play();
+        _musicSource.volume = _musicVolume;
     }
 
 

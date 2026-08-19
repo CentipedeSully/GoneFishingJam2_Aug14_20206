@@ -138,10 +138,10 @@ public class MinigameDriver : MonoBehaviour
 
     private void ListenForInput()
     {
-        _actionInput = Input.GetKeyDown(KeyCode.Space);
-        _nextInput= Input.GetKeyDown(KeyCode.E);
-        _prevInput = Input.GetKeyDown(KeyCode.Q);
-        _backInput = Input.GetKeyDown(KeyCode.Escape);
+        _actionInput = Input.GetKeyDown(KeyCode.Space) ;
+        _nextInput= Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow);
+        _prevInput = Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow);
+        _backInput = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X);
     }
 
     private void ChangeFishTarget(int direction)

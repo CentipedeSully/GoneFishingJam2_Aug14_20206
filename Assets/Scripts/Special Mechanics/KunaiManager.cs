@@ -6,13 +6,14 @@ using UnityEngine.Events;
 public class KunaiManager : MonoBehaviour
 {
     [SerializeField] private int _maxKunai = 3;
-    [SerializeField] private int _kunaiAvailable = 3;
+    [SerializeField] private int _kunaiAvailable = 0;
     [SerializeField] private GameObject _kunaiGraphic;
     [SerializeField] private RectTransform _kunaiContainer;
     [SerializeField] private float _kunaiRegenTime = .75f;
     [SerializeField] private float _regenCooldown = 2f;
     [SerializeField] private float _currentKunaiRegen = 0;
     private bool _regenReady = true;
+    private bool _gameStarted = false;
 
     public UnityEvent OnKunaiRegenerated;
 
@@ -20,11 +21,16 @@ public class KunaiManager : MonoBehaviour
     private void Awake()
     {
         foreach(Animator animator in _kunaiContainer.GetComponentsInChildren<Animator>())
+        {
             animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            animator.SetBool("isGone", true);
+        }
     }
 
     private void Update()
     {
+        if (!_gameStarted)
+            return;
         if (_regenReady)
             TickKunaiRegen();
     }
@@ -134,5 +140,5 @@ public class KunaiManager : MonoBehaviour
         }
     }
 
-
+    public void RespondToGameStart() { _gameStarted = true; }
 }
