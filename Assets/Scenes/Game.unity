@@ -22299,6 +22299,11 @@ MonoBehaviour:
   _downsplashPitchRange: 0.05
   _downsplashBaseVolume: 0.3
   _cmdTriggerDownsplashEffect: 0
+  _depositClip: {fileID: 8300000, guid: 84057f1e80d924eb6a5d471d6fb37083, type: 3}
+  _depositPitchBaseline: 1.2
+  _depositPitchRange: 0.1
+  _depositBaseVolume: 0.5
+  _cmdTriggerDepositEffect: 0
 --- !u!1 &1230874723
 GameObject:
   m_ObjectHideFlags: 0
@@ -37555,6 +37560,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2091926332}
         m_TargetAssemblyTypeName: FishBasket, Assembly-CSharp
         m_MethodName: AnimateFishAdded
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1221670415}
+        m_TargetAssemblyTypeName: AudioController, Assembly-CSharp
+        m_MethodName: PlayDepositAudio
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

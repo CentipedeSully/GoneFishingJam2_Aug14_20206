@@ -60,14 +60,12 @@ public class AudioController : MonoBehaviour
     [SerializeField] private bool _cmdTriggerDownsplashEffect;
 
 
-    /*
-    [Header("Salmon Hit (OneShot) Audio Settings")]
-    [SerializeField] private AudioClip _HitClip;
-    [SerializeField] private float _salmonPitchBaseline = 1;
-    [SerializeField] private float _salmonPitchRange = .2f;
-    [SerializeField] private float _salmonBaseVolume = .5f;
-    [SerializeField] private bool _cmdTriggerSalmonHitEffect;
-    */
+    [Header("Fish Deposit (OneShot) Audio Settings")]
+    [SerializeField] private AudioClip _depositClip;
+    [SerializeField] private float _depositPitchBaseline = 1;
+    [SerializeField] private float _depositPitchRange = .2f;
+    [SerializeField] private float _depositBaseVolume = .5f;
+    [SerializeField] private bool _cmdTriggerDepositEffect;
 
 
     private enum MultiShotClips
@@ -189,6 +187,13 @@ public class AudioController : MonoBehaviour
         _oneShotSource.PlayOneShot(_downsplashClip);
     }
 
+    public void PlayDepositAudio()
+    {
+        _oneShotSource.pitch = GetRandomizedPitch(_depositPitchBaseline, _depositPitchRange);
+        _oneShotSource.volume = _depositBaseVolume;
+        _oneShotSource.PlayOneShot(_depositClip);
+    }
+
 
 
 
@@ -223,6 +228,12 @@ public class AudioController : MonoBehaviour
         {
             _cmdTriggerDownsplashEffect = false;
             PlayDownsplashAudio();
+        }
+
+        if (_cmdTriggerDepositEffect)
+        {
+            _cmdTriggerDepositEffect = false;
+            PlayDepositAudio();
         }
     }
 
