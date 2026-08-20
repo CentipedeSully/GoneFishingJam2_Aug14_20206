@@ -21,6 +21,15 @@ public class TimedClickMiniGame : MonoBehaviour
     [SerializeField] private float _sweetSpotMin;
     [SerializeField] private float _sweetSpotMax;
 
+    [Header("Difficulty Progression")]
+    [SerializeField] private float _lv1Range;
+    [SerializeField] private float _lv2Range;
+    [SerializeField] private float _lv3Range;
+    [SerializeField] private float _lv4Range;
+    [SerializeField] private float _lv5Range;
+    [SerializeField] private int _currentLevel = 1;
+
+
     
 
     [Header("UnityEvents")]
@@ -42,6 +51,11 @@ public class TimedClickMiniGame : MonoBehaviour
 
 
     //monobehaviours
+    private void Awake()
+    {
+        _sweetSpotRange = _lv1Range;
+    }
+
     private void Update()
     {
         if (_isDebugActive)
@@ -137,6 +151,41 @@ public class TimedClickMiniGame : MonoBehaviour
         if (distanceFromMinBar <= _sweetSpotRange * 2 && distanceFromMaxBar <= _sweetSpotRange * 2)
             return true;
         return false;
+    }
+
+    public void RespondToTripleHit(int fishHit)
+    {
+        if (fishHit < 3)
+            return;
+
+        if (_currentLevel < 5)
+        {
+            switch (_currentLevel)
+            {
+                case 1:
+                    _currentLevel++;
+                    _sweetSpotRange = _lv2Range;
+                    break;
+
+                case 2:
+                    _currentLevel++;
+                    _sweetSpotRange = _lv3Range;
+                    break;
+
+                case 3:
+                    _currentLevel++;
+                    _sweetSpotRange = _lv4Range;
+                    break;
+
+                case 4:
+                    _currentLevel++;
+                    _sweetSpotRange = _lv5Range;
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 
     //Debug

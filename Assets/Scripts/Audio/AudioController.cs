@@ -132,6 +132,8 @@ public class AudioController : MonoBehaviour
 
         if (_isFading)
             TickBulletTimeTransition();
+
+        
     }
 
 
@@ -188,12 +190,12 @@ public class AudioController : MonoBehaviour
 
     private void TickBulletTimeTransition()
     {
-        _currentFadeTime += Time.unscaledDeltaTime;
-        float progression = _currentFadeTime / _fadeDuration;
-
+        
+        //fade into bullet time
         if (!_isBulletTimePlaying)
         {
-            
+            _currentFadeTime += Time.unscaledDeltaTime;
+            float progression = _currentFadeTime / _fadeDuration;
             _bulletTimeSource.volume = Mathf.Lerp(0, _bulletTimeVolume, progression);
             _musicSource.volume = Mathf.Lerp(_musicVolume, _reducedMusicVol, progression);
             _ambienceSource.volume = Mathf.Lerp(_ambienceVolume, _reducedAmbienceVol, progression);
@@ -204,16 +206,14 @@ public class AudioController : MonoBehaviour
                 _isBulletTimePlaying = true;
                 _isFading = false;
 
-                if (_paceMaker != null)
-                    StopCoroutine( _paceMaker );
-
-                _paceMaker = TickPulses();
-                StartCoroutine(_paceMaker);
             }
         }
 
+        //fade out of bullet time
         else
         {
+            _currentFadeTime += Time.unscaledDeltaTime;
+            float progression = _currentFadeTime / _fadeDuration;
             _bulletTimeSource.volume = Mathf.Lerp(_bulletTimeVolume, 0, progression);
             _musicSource.volume = Mathf.Lerp(_reducedMusicVol, _musicVolume, progression);
             _ambienceSource.volume = Mathf.Lerp(_reducedAmbienceVol, _ambienceVolume, progression);
@@ -223,6 +223,14 @@ public class AudioController : MonoBehaviour
                 _currentFadeTime = 0;
                 _isBulletTimePlaying = false;
                 _isFading = false;
+
+                //end the bullet time ambience
+                if (_paceMaker != null)
+                {
+                    StopCoroutine(_paceMaker);
+                    _paceMaker = null;
+                }
+
             }
         }
 
@@ -230,13 +238,14 @@ public class AudioController : MonoBehaviour
 
     private IEnumerator TickPulses()
     {
-        while (_isBulletTimePlaying)
+        while (true)
         {
             FirstPulse();
             yield return new WaitForSecondsRealtime(_pulseDelay);
             SecondPulse();
             yield return new WaitForSecondsRealtime(_pulseFrequency);
         }
+
     }
 
     private void FirstPulse()
@@ -259,13 +268,25 @@ public class AudioController : MonoBehaviour
     //externals
     public void RespondToEnterBulletTime()
     {
+        //ensure all utiliites are reset
         _isFading = true;
+        _currentFadeTime = 0;
+        _isBulletTimePlaying = false;
+
+        if (_paceMaker != null)
+            StopCoroutine(_paceMaker);
+
+        _paceMaker = TickPulses();
+        StartCoroutine(_paceMaker);
     }
     public void RespondToExitBulletTime()
     {
+        //ensure all utiliites are reset
         _isFading = true;
-        if (_paceMaker != null)
-           StopCoroutine(_paceMaker);
+        _currentFadeTime = 0;
+        _isBulletTimePlaying = true;
+
+        
     }
 
     public void PlayThrowAudio()

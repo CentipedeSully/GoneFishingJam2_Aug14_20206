@@ -9157,6 +9157,12 @@ MonoBehaviour:
   _isCycling: 0
   _sweetSpotMin: 0
   _sweetSpotMax: 0
+  _lv1Range: 25
+  _lv2Range: 20
+  _lv3Range: 15
+  _lv4Range: 10
+  _lv5Range: 5
+  _currentLevel: 1
   OnMinigameStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -9400,6 +9406,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1605448534}
         m_TargetAssemblyTypeName: TriplesController, Assembly-CSharp
         m_MethodName: TrackTripleHit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 440975380}
+        m_TargetAssemblyTypeName: TimedClickMiniGame, Assembly-CSharp
+        m_MethodName: RespondToTripleHit
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -29617,7 +29635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxKunai: 3
-  _kunaiAvailable: 3
+  _kunaiAvailable: 0
   _kunaiGraphic: {fileID: 6662279132902509181, guid: 07db8e609a06b3f43b38a60ef92463b9, type: 3}
   _kunaiContainer: {fileID: 1338561279}
   _kunaiRegenTime: 0.75
@@ -35708,7 +35726,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1221670415}
         m_TargetAssemblyTypeName: AudioController, Assembly-CSharp
-        m_MethodName: PlayCompletionAudio2
+        m_MethodName: PlayCompletionAudio
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

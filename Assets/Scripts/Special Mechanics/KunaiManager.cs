@@ -43,6 +43,7 @@ public class KunaiManager : MonoBehaviour
             _currentKunaiRegen += Time.deltaTime;
             if (_currentKunaiRegen >= _kunaiRegenTime)
             {
+
                 _currentKunaiRegen = 0;
                 _kunaiAvailable++;
                 OnKunaiRegenerated?.Invoke();
@@ -140,5 +141,9 @@ public class KunaiManager : MonoBehaviour
         }
     }
 
-    public void RespondToGameStart() { _gameStarted = true; }
+    public void RespondToGameStart() 
+    { 
+        _gameStarted = true; 
+    
+    }
 }
