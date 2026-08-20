@@ -7,6 +7,7 @@ public class MinigameDriver : MonoBehaviour
 {
     [SerializeField] private float _inputDelay = .1f;
     private bool _isCoolingInput = false;
+    private bool _isGameStarted = false;
     [SerializeField] private Transform _uiContainer;
     [SerializeField] private GameObject _targetLostFeedbackPrefab;
     [SerializeField] private RectTransform _minigameRectTransform;
@@ -49,6 +50,9 @@ public class MinigameDriver : MonoBehaviour
     }
     private void Update()
     {
+        if (!_isGameStarted)
+            return;
+
         ListenForInput();
         ControlBulletTime();
 
@@ -259,7 +263,7 @@ public class MinigameDriver : MonoBehaviour
         }
     }
 
-
+    public void RespondToGameStarted() { _isGameStarted = true; }
 
 
     public void LogThrow(bool result)

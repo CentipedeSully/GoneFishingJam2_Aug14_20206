@@ -7,6 +7,9 @@ public class AudioController : MonoBehaviour
     [Header("References")]
     [SerializeField] private AudioSource _ambienceSource;
     [SerializeField] private float _ambienceVolume;
+    [SerializeField] private float _ambienceFadeInDuration = 2;
+    private float _currentAmbienceFadeTime = 0;
+    private bool _isFadingInAmbience = false;
     [SerializeField] private AudioSource _musicSource;
     [SerializeField] private float _musicVolume;
     [SerializeField] private AudioSource _oneShotSource;
@@ -100,8 +103,13 @@ public class AudioController : MonoBehaviour
     [SerializeField] private float _completionBaseVolume = .5f;
     [SerializeField] private bool _cmdTriggerCompletionEffect;
 
+    [Header("Ui Click (OneShot) Audio Setting")]
+    [SerializeField] private AudioClip _uiClickClip;
+    [SerializeField] private float _uiClickPitchBaseline = 1;
+    [SerializeField] private float _uiClickBaseVolume = .5f;
+    [SerializeField] private bool _cmdTriggerUiClickEffect;
 
-
+    
     private enum MultiShotClips
     {
         Throw,
@@ -116,6 +124,9 @@ public class AudioController : MonoBehaviour
         if (_enableTestCommands)
             ListenForDebugCommands();
 
+        if (_isFadingInAmbience)
+            FadeInAmbience();
+
         if (_isDelayingSalmonPlay)
             TickSalmonWaitDelay();
 
@@ -125,6 +136,17 @@ public class AudioController : MonoBehaviour
 
 
     //internals
+    private void FadeInAmbience()
+    {
+        _currentAmbienceFadeTime += Time.deltaTime;
+        _ambienceSource.volume = _ambienceVolume * (_currentAmbienceFadeTime / _ambienceFadeInDuration);
+
+        if (_currentAmbienceFadeTime >= _ambienceFadeInDuration)
+        {
+            _currentAmbienceFadeTime = 0;
+            _isFadingInAmbience = false;
+        }
+    }
     private void TickSalmonWaitDelay()
     {
         _currentSalmonPlayDelay += Time.unscaledDeltaTime;
@@ -320,14 +342,22 @@ public class AudioController : MonoBehaviour
 
     public void PlayAmbience()
     {
+        _ambienceSource.volume = 0;
         _ambienceSource.Play();
-        _ambienceSource.volume = _ambienceVolume;
+        _isFadingInAmbience = true;
     }
 
     public void PlayMusic()
     {
         _musicSource.Play();
         _musicSource.volume = _musicVolume;
+    }
+
+    public void PlayUiClickAudio()
+    {
+        _oneShotSource.pitch = _uiClickPitchBaseline;
+        _oneShotSource.volume = _uiClickBaseVolume;
+        _oneShotSource.PlayOneShot(_uiClickClip);
     }
 
 
@@ -380,6 +410,12 @@ public class AudioController : MonoBehaviour
         {
             _cmdTriggerCompletionEffect = false;
             PlayCompletionAudio();
+        }
+
+        if (_cmdTriggerUiClickEffect)
+        {
+            _cmdTriggerUiClickEffect = false;
+            PlayUiClickAudio();
         }
 
     }

@@ -131,6 +131,7 @@ public class StartScreenController : MonoBehaviour
 
     private void StartGame()
     {
+        _gameStarted = true;
         _backgroundAnimator.SetBool("isGameStarted", true);
         _titleAnimator.SetBool("isGameStarted",true);
         _creditsAnimator.SetBool("isGameStarted",true);

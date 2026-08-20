@@ -35,7 +35,6 @@ public class BulletTime : MonoBehaviour
     private float _transitionAlpha;
 
     float _remainingTime;
-    private bool _gameStarted = false;
 
 
     private void Start()
@@ -46,9 +45,6 @@ public class BulletTime : MonoBehaviour
 
     private void Update()
     {
-        if (!_gameStarted)
-            return;
-
         if (_debugActive)
             ListenForDebugCommands();
 
@@ -150,7 +146,6 @@ public class BulletTime : MonoBehaviour
 
     public float GetBulletTimeDuration() { return _bulletTimeDuration; }
 
-    public void RespondToGameStart() { _gameStarted = true; }
 
     private void ListenForDebugCommands()
     {
